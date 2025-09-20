@@ -1,5 +1,7 @@
 package com.shop.service;
 
+import com.shop.dto.CartItemResponseDto;
+import com.shop.dto.CartResponseDto;
 import com.shop.model.Cart;
 import com.shop.model.CartItem;
 import com.shop.model.Product;
@@ -9,6 +11,7 @@ import com.shop.repository.ProductRepository;
 import com.shop.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,16 +27,13 @@ public class CartService {
         this.userRepository = userRepository;
     }
 
-    public Cart addToCart(Long userId, Long productId, int quantity) {
-        // находим пользователя
+    public void addToCart(Long userId, Long productId, int quantity) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
-        // находим продукт
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Продукт не найден"));
 
-        // ищем корзину пользователя
         Cart cart = cartRepository.findByUser(user)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
@@ -41,7 +41,6 @@ public class CartService {
                     return cartRepository.save(newCart);
                 });
 
-        // проверяем, есть ли уже такой продукт в корзине
         Optional<CartItem> existingItem = cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst();
@@ -59,6 +58,38 @@ public class CartService {
             cart.getItems().add(newItem);
         }
 
-        return cartRepository.save(cart);
+        cartRepository.save(cart);
+
+//        CartResponseDto responseDto = new CartResponseDto();
+//        responseDto.setItems(cart.getItems());
+//        responseDto.setTotalPrice();
+
+//        return responseDto;
+    }
+
+    public CartResponseDto getCart(Long userId) {
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        List<CartItemResponseDto> items = cart.getItems().stream()
+                .map(item -> {
+                    CartItemResponseDto dto = new CartItemResponseDto();
+                    dto.setProductName(item.getProduct().getName());
+                    dto.setQuantity(item.getQuantity());
+                    dto.setPrice(item.getProduct().getPrice());
+                    dto.setTotalPrice(item.getProduct().getPrice() * item.getQuantity());
+                    return dto;
+                })
+                .toList();
+
+        double totalPrice = items.stream()
+                .mapToDouble(CartItemResponseDto::getTotalPrice)
+                .sum();
+
+        CartResponseDto response = new CartResponseDto();
+        response.setItems(items);
+        response.setTotalPrice(totalPrice);
+
+        return response;
     }
 }

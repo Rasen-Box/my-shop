@@ -25,4 +25,10 @@ public class User {
 
     @Column(nullable = false)
     private String role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Order order;
 }

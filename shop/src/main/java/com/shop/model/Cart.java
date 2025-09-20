@@ -18,7 +18,7 @@ public class Cart {
 
     // корзина привязана к конкретному пользователю
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // список товаров в корзине
