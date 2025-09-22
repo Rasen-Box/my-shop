@@ -2,6 +2,7 @@ package com.shop.service;
 
 import com.shop.dto.CartItemResponseDto;
 import com.shop.dto.CartResponseDto;
+import com.shop.exception.AppException;
 import com.shop.model.Cart;
 import com.shop.model.CartItem;
 import com.shop.model.Product;
@@ -9,6 +10,7 @@ import com.shop.model.User;
 import com.shop.repository.CartRepository;
 import com.shop.repository.ProductRepository;
 import com.shop.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,10 +31,10 @@ public class CartService {
 
     public void addToCart(Long userId, Long productId, int quantity) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+                .orElseThrow(() -> new AppException("Пользователь не найден", HttpStatus.BAD_REQUEST));
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Продукт не найден"));
+                .orElseThrow(() -> new AppException("Продукт не найден", HttpStatus.BAD_REQUEST));
 
         Cart cart = cartRepository.findByUser(user)
                 .orElseGet(() -> {
@@ -69,7 +71,7 @@ public class CartService {
 
     public CartResponseDto getCart(Long userId) {
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new AppException("Cart not found", HttpStatus.BAD_REQUEST));
 
         List<CartItemResponseDto> items = cart.getItems().stream()
                 .map(item -> {
@@ -91,5 +93,18 @@ public class CartService {
         response.setTotalPrice(totalPrice);
 
         return response;
+    }
+
+    public Cart getCartByUser(User user) {
+
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new AppException("Корзина не найдена", HttpStatus.BAD_REQUEST));
+
+        return cart;
+    }
+
+    public void clearCartAfterOrder(Long cartId) {
+
+        cartRepository.deleteById(cartId);
     }
 }

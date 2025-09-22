@@ -4,18 +4,19 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Getter
 @Setter
-public class CartItem {
+@Getter
+@Entity
+public class OrderItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     // к какой корзине относится
     @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     // сам продукт
     @ManyToOne
@@ -32,12 +33,12 @@ public class CartItem {
         this.id = id;
     }
 
-    public Cart getCart() {
-        return cart;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Product getProduct() {
@@ -55,4 +56,5 @@ public class CartItem {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
 }

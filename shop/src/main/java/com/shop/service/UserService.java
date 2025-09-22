@@ -4,21 +4,26 @@ package com.shop.service;
 import com.shop.dto.UserRequestDto;
 import com.shop.mapper.UserMapper;
 import com.shop.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
+    }
+
     public String  registerUser(UserRequestDto userRequestDto) {
         // проверка: есть ли такой username
-        if (userRepository.findByUsername(userRequestDto.getUserName()).isPresent()) {
+        if (userRepository.findByUserName(userRequestDto.getUserName()).isPresent()) {
             throw new RuntimeException("Пользователь с таким именем уже существует");
         }
 
