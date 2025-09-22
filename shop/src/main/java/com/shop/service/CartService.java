@@ -97,10 +97,8 @@ public class CartService {
 
     public Cart getCartByUser(User user) {
 
-        Cart cart = cartRepository.findByUser(user)
+        return cartRepository.findByUser(user)
                 .orElseThrow(() -> new AppException("Корзина не найдена", HttpStatus.BAD_REQUEST));
-
-        return cart;
     }
 
     public void clearCartAfterOrder(Long cartId) {

@@ -1,13 +1,11 @@
 package com.shop.service;
 
-import com.shop.dto.OrderResponseDto;
 import com.shop.model.Cart;
 import com.shop.model.Order;
 import com.shop.model.OrderItem;
 import com.shop.model.User;
 import com.shop.model.enums.OrderStatus;
 import com.shop.repository.OrderRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,13 +18,17 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CartService cartService;
+    private final UserService userService;
 
-    public OrderService(CartService cartService, OrderRepository orderRepository) {
+    public OrderService(CartService cartService, OrderRepository orderRepository, UserService userService) {
         this.cartService = cartService;
         this.orderRepository = orderRepository;
+        this.userService = userService;
     }
 
-    public void create(User user) { //OrderResponseDto вместо void
+    public void createOrder(Long userId) { //OrderResponseDto вместо void
+
+        User user = userService.getUserById(userId);
 
         Cart cart = cartService.getCartByUser(user);
         Order order = new Order();

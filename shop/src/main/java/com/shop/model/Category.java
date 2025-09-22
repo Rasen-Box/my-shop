@@ -1,30 +1,32 @@
 package com.shop.model;
 
-
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
-public class Product {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String name;
 
     private String description;
 
-    private Double price;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products;
 
-    private Integer stock;
+    public Category() {
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "categoryId")
-    private Category category;
+    public Category(String name, String description, List<Product> products) {
+        this.name = name;
+        this.description = description;
+        this.products = products;
+    }
 
     public Long getId() {
         return id;
@@ -50,19 +52,11 @@ public class Product {
         this.description = description;
     }
 
-    public Double getPrice() {
-        return price;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

@@ -2,8 +2,11 @@ package com.shop.service;
 
 
 import com.shop.dto.UserRequestDto;
+import com.shop.exception.AppException;
 import com.shop.mapper.UserMapper;
+import com.shop.model.User;
 import com.shop.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +41,11 @@ public class UserService {
         userRepository.save(userMapper.toEntity(userRequestDto));
 
         return "User created";
+    }
+
+    public User getUserById(Long userId) {
+
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new AppException("Такого пользователя нет", HttpStatus.BAD_REQUEST));
     }
 }
