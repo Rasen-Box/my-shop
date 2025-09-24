@@ -10,6 +10,7 @@ import com.shop.model.User;
 import com.shop.repository.CartRepository;
 import com.shop.repository.ProductRepository;
 import com.shop.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
 
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
-
-    public CartService(CartRepository cartRepository, ProductRepository productRepository, UserRepository userRepository) {
-        this.cartRepository = cartRepository;
-        this.productRepository = productRepository;
-        this.userRepository = userRepository;
-    }
 
     public void addToCart(Long userId, Long productId, int quantity) {
         User user = userRepository.findById(userId)
@@ -95,7 +91,7 @@ public class CartService {
         return response;
     }
 
-    public Cart getCartByUser(User user) {
+    public Cart getEntityCartByUser(User user) {
 
         return cartRepository.findByUser(user)
                 .orElseThrow(() -> new AppException("Корзина не найдена", HttpStatus.BAD_REQUEST));

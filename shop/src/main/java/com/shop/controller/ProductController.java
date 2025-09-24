@@ -5,20 +5,18 @@ import com.shop.dto.ProductRequestDto;
 import com.shop.dto.ProductResponseDto;
 import com.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/product")
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @PostMapping
     public ProductResponseDto create(@RequestBody ProductRequestDto dto) {
@@ -26,8 +24,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductResponseDto> getAll() {
-        return productService.getAllProducts();
+    public ResponseEntity<Page<ProductResponseDto>> getAll(
+            @RequestParam(defaultValue = "0") Long page,
+            @RequestParam(defaultValue = "10") Long size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) Long categoryId
+    ) {
+        return ResponseEntity.ok(productService.getAllProducts(page, size, sortBy, categoryId));
     }
 
     @GetMapping("/{id}")

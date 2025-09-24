@@ -8,5 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "cart", ignore = true)
+    @Mapping(target = "order", ignore = true)
     User toEntity(UserRequestDto userRequestDto);
 }

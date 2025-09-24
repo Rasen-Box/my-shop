@@ -6,6 +6,7 @@ import com.shop.model.OrderItem;
 import com.shop.model.User;
 import com.shop.model.enums.OrderStatus;
 import com.shop.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,24 +14,18 @@ import java.util.List;
 
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CartService cartService;
     private final UserService userService;
 
-    public OrderService(CartService cartService, OrderRepository orderRepository, UserService userService) {
-        this.cartService = cartService;
-        this.orderRepository = orderRepository;
-        this.userService = userService;
-    }
-
     public void createOrder(Long userId) { //OrderResponseDto вместо void
 
         User user = userService.getUserById(userId);
 
-        Cart cart = cartService.getCartByUser(user);
+        Cart cart = cartService.getEntityCartByUser(user);
         Order order = new Order();
         order.setUser(user);
         order.setStatus(OrderStatus.PROCESSING);

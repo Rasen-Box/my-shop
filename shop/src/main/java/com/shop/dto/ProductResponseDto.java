@@ -10,7 +10,7 @@ public class ProductResponseDto {
     private String name;
     private String description;
     private Double price;
-    private Integer stock;
+    private String categoryName;
 
     public String getName() {
         return name;
@@ -36,11 +36,11 @@ public class ProductResponseDto {
         this.price = price;
     }
 
-    public Integer getStock() {
-        return stock;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
