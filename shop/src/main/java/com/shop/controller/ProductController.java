@@ -33,6 +33,16 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts(page, size, sortBy, categoryId));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductResponseDto>> searchProducts(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") Long page,
+            @RequestParam(defaultValue = "10") Long size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+        return ResponseEntity.ok(productService.searchProducts(query, page, size, sortBy));
+    }
+
     @GetMapping("/{id}")
     public ProductResponseDto getById(@PathVariable Long id) {
         return productService.getProductById(id);

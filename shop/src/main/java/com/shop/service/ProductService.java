@@ -67,6 +67,16 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    public Page<ProductResponseDto> searchProducts(String query, Long page, Long size, String sortBy) {
+
+        Pageable pageable = PageRequest.of(page.intValue(), size.intValue(), Sort.by(sortBy).ascending());
+
+        Page<Product> products = productRepository
+                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query, pageable);
+
+        return products.map(productMapper::toDto);
+    }
+
     public List<ProductResponseDto> getEntityProductsByCategoryId(Long categoryId) {
 
         List<Product> products = productRepository.findByCategoryId(categoryId);
